@@ -1,0 +1,54 @@
+b = [4, 7, 5, 2, 6, 8, 10, 9, 3, 1]
+
+#find top k "max"/min items in the list
+
+#quick sort and cut first k items -> O(nlogn)
+#bubble/selection/insertion sort -> O(kn)
+#heapsort -> O(nlogk)
+
+#copy from main()
+def sift(list, low, high):
+    '''
+
+    :param list: input list
+    :param low: the root node
+    :param high: the last element of the heap
+    :return: no return
+    '''
+    # gonna use min heap rather than max heap
+    i = low
+    j = (2*i)+ 1
+    temp = list[low]
+    while j <= high:
+        #if j+1 <= high and list[j+1] > list[j]: #left: have right | right: right>left
+        if j + 1 <= high and list[j + 1] < list[j]:
+            j = j+1
+        #if temp < list[j]:
+        if temp > list[j]:
+            list[i] = list[j]
+            i = j
+            j = (2*i) + 1
+        else:
+            list[i] = temp
+            break
+    else:
+        list[i] = temp
+
+def topk(list, k):
+    heap = list[0:k]
+    for i in range((k-2)//2,-1,-1):
+        sift(heap, i, k -1)
+    #build the heap (compare the value)
+    for i in range(k, len(list)-1):
+        if list[i] > heap[0]:
+            heap[0] = list[i]
+            sift(heap, 0, k-1)
+    #traverse(reorder)
+    for i in range(k - 1, -1, -1):
+        heap[0], heap[i] = heap[i], heap[0]
+        sift(heap, 0, i - 1)
+    #output
+    return heap
+
+
+print(topk(b, 8))
